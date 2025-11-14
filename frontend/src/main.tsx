@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
-import { ThemeProvider } from "@/context/themeContext/ThemeContext.tsx";
 import "./index.css";
 import App from "./App.tsx";
+import { ThemeProvider } from "./context/themeContext/ThemeProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider>
