@@ -13,7 +13,7 @@ const Navigation = () => {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Book Now", path: "/booking" },
-    { name: "Admin", path: "/admin" },
+    { name: "Bookings", path: "/bookings" },
   ];
 
   return (
