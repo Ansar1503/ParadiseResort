@@ -9,10 +9,9 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-foreground text-background py-12 px-4">
+    <footer className="bg-foreground text-background dark:bg-background dark:text-foreground py-12 px-4">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Contact Info */}
           <div>
             <h3 className="text-xl font-bold mb-4">Contact Us</h3>
             <div className="space-y-3">
@@ -34,7 +33,7 @@ const Footer = () => {
           {/* About */}
           <div>
             <h3 className="text-xl font-bold mb-4">About Paradise Resort</h3>
-            <p className="text-background/80 leading-relaxed">
+            <p className="text-background/80 dark:text-foreground/80 leading-relaxed">
               Experience luxury and tranquility at our tropical paradise. We
               offer world-class amenities and unforgettable experiences in one
               of the most beautiful locations on Earth.
@@ -47,22 +46,25 @@ const Footer = () => {
             <div className="flex gap-4">
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors"
-                aria-label="Facebook"
+                className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 
+            dark:bg-foreground/10 dark:hover:bg-foreground/20
+            flex items-center justify-center transition-colors"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors"
-                aria-label="Instagram"
+                className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 
+            dark:bg-foreground/10 dark:hover:bg-foreground/20
+            flex items-center justify-center transition-colors"
               >
                 <Instagram className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 flex items-center justify-center transition-colors"
-                aria-label="Twitter"
+                className="w-10 h-10 rounded-full bg-background/10 hover:bg-background/20 
+            dark:bg-foreground/10 dark:hover:bg-foreground/20
+            flex items-center justify-center transition-colors"
               >
                 <Twitter className="w-5 h-5" />
               </a>
@@ -70,7 +72,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-background/20 mt-8 pt-8 text-center text-background/70">
+        <div className="border-t border-background/20 dark:border-foreground/20 mt-8 pt-8 text-center text-background/70 dark:text-foreground/70">
           <p>&copy; 2024 Paradise Resort. All rights reserved.</p>
         </div>
       </div>
