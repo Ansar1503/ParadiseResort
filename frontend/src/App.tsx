@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Home from "./pages/Home";
 import Booking from "./pages/Booking";
-import AdminBookings from "./pages/AdminBookings";
+import BookingList from "./pages/BookingsLists";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -13,12 +13,12 @@ const App = () => (
     <BrowserRouter>
       <Navigation />
       <div className="pt-16">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/booking" element={<Booking />} />
-        <Route path="/admin" element={<AdminBookings />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/list" element={<BookingList />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </div>
     </BrowserRouter>
   </TooltipProvider>
