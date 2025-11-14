@@ -1,6 +1,6 @@
-import Hero from "@/components/home/Hero";
-import Services from "@/components/home/Services";
-import Gallery from "@/components/home/Gallery";
+import Hero from "@/components/Home/Hero";
+import Services from "@/components/Home/Services";
+import Gallery from "@/components/Home/Gallery";
 import Footer from "@/components/Footer";
 
 const Home = () => {

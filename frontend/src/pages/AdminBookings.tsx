@@ -6,9 +6,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Footer from "@/components/Footer";
-
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 const mockBookings = [
   {
     id: 1,
@@ -70,13 +74,17 @@ const AdminBookings = () => {
                 <TableBody>
                   {mockBookings.map((booking) => (
                     <TableRow key={booking.id}>
-                      <TableCell className="font-medium">{booking.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {booking.name}
+                      </TableCell>
                       <TableCell>{booking.email}</TableCell>
                       <TableCell>{booking.phone}</TableCell>
                       <TableCell>{booking.checkIn}</TableCell>
                       <TableCell>{booking.checkOut}</TableCell>
                       <TableCell>{booking.guests}</TableCell>
-                      <TableCell className="max-w-xs truncate">{booking.message}</TableCell>
+                      <TableCell className="max-w-xs truncate">
+                        {booking.message}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
