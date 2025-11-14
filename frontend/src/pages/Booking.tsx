@@ -1,11 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import Footer from "@/components/Footer";
 
@@ -23,17 +35,21 @@ const Booking = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Basic validation
-    if (!formData.fullName || !formData.email || !formData.phone || !formData.checkIn || !formData.checkOut || !formData.guests) {
+
+    if (
+      !formData.fullName ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.checkIn ||
+      !formData.checkOut ||
+      !formData.guests
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-    // Success message
     toast.success("Booking submitted successfully! We'll contact you soon.");
-    
-    // Reset form
+
     setFormData({
       fullName: "",
       email: "",
@@ -44,7 +60,6 @@ const Booking = () => {
       specialRequests: "",
     });
 
-    // Navigate back to home after a delay
     setTimeout(() => navigate("/"), 2000);
   };
 
@@ -53,7 +68,9 @@ const Booking = () => {
       <div className="container mx-auto px-4 py-24">
         <Card className="max-w-2xl mx-auto shadow-xl">
           <CardHeader className="text-center space-y-2">
-            <CardTitle className="text-3xl md:text-4xl">Book Your Stay</CardTitle>
+            <CardTitle className="text-3xl md:text-4xl">
+              Book Your Stay
+            </CardTitle>
             <CardDescription className="text-base">
               Fill in your details and we'll get back to you shortly
             </CardDescription>
@@ -66,7 +83,9 @@ const Booking = () => {
                   id="fullName"
                   placeholder="John Doe"
                   value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -78,7 +97,9 @@ const Booking = () => {
                   type="email"
                   placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -90,7 +111,9 @@ const Booking = () => {
                   type="tel"
                   placeholder="+1 (555) 123-4567"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -102,7 +125,9 @@ const Booking = () => {
                     id="checkIn"
                     type="date"
                     value={formData.checkIn}
-                    onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, checkIn: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -113,7 +138,9 @@ const Booking = () => {
                     id="checkOut"
                     type="date"
                     value={formData.checkOut}
-                    onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, checkOut: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -123,7 +150,9 @@ const Booking = () => {
                 <Label htmlFor="guests">Number of Guests *</Label>
                 <Select
                   value={formData.guests}
-                  onValueChange={(value) => setFormData({ ...formData, guests: value })}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, guests: value })
+                  }
                   required
                 >
                   <SelectTrigger id="guests">
@@ -140,13 +169,20 @@ const Booking = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="specialRequests">Special Requests (Optional)</Label>
+                <Label htmlFor="specialRequests">
+                  Special Requests (Optional)
+                </Label>
                 <Textarea
                   id="specialRequests"
                   placeholder="Any special requests or dietary requirements..."
                   rows={4}
                   value={formData.specialRequests}
-                  onChange={(e) => setFormData({ ...formData, specialRequests: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      specialRequests: e.target.value,
+                    })
+                  }
                 />
               </div>
 

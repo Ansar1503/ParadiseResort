@@ -44,7 +44,6 @@ const Navigation = () => {
               </Link>
             ))}
           </div>
-          {/* Mobile Menu Button */}
           <Button
             variant="ghost"
             size="icon"
@@ -55,7 +54,6 @@ const Navigation = () => {
           </Button>
         </div>
 
-        {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 space-y-2">
             {navLinks.map((link) => (
