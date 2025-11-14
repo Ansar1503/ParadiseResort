@@ -12,12 +12,14 @@ const App = () => (
     <Sonner />
     <BrowserRouter>
       <Navigation />
+      <div className="pt-16">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/admin" element={<AdminBookings />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </div>
     </BrowserRouter>
   </TooltipProvider>
 );
