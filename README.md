@@ -10,7 +10,7 @@ This project was created as part of a **Full Stack Machine Test**, including fro
 
  **Frontend:**
 
-🔗 *[frontend-url]((https://resortparaside.vercel.app/))*
+🔗 *[frontend-url]([https://resortparaside.vercel.app/])*
 
 **Backend API:**
 
