@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import type { bookingForm } from "@/types/BookingType";
 import { validateField } from "@/validator/FormValidation";
+import { usePostBookingForm } from "@/hooks/usePostBookingForm";
+import { Loader2 } from "lucide-react";
 
 const Booking = () => {
   const [formData, setFormData] = useState<bookingForm>({
@@ -28,7 +30,7 @@ const Booking = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const { error, loading, submitBooking } = usePostBookingForm();
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -39,7 +41,7 @@ const Booking = () => {
     setErrors((prev) => ({ ...prev, [id]: errorMsg }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const newErrors: Record<string, string> = {};
@@ -51,19 +53,24 @@ const Booking = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) return;
-    console.log("form", formData);
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      checkInDate: "",
-      checkInTime: "",
-      checkOutDate: "",
-      checkOutTime: "",
-      message: "",
-    });
+    try {
+      await submitBooking(formData);
+      toast.success("booking added successfully");
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        checkInDate: "",
+        checkInTime: "",
+        checkOutDate: "",
+        checkOutTime: "",
+        message: "",
+      });
 
-    setErrors({});
+      setErrors({});
+    } catch (error) {
+      console.log("errors", error);
+    }
   };
 
   return (
@@ -192,9 +199,20 @@ const Booking = () => {
                   <p className="text-red-500 text-sm">{errors.message}</p>
                 )}
               </div>
+              {error && (
+                <div className="p-3 text-red-600 bg-red-100 border border-red-300 rounded-md text-sm">
+                  {error}
+                </div>
+              )}
 
-              <Button type="submit" className="w-full" size="lg">
-                Submit Booking
+              <Button
+                disabled={loading}
+                type="submit"
+                className="w-full flex items-center justify-center gap-2"
+                size="lg"
+              >
+                {loading && <Loader2 className="h-5 w-5 animate-spin" />}
+                {loading ? "Submitting..." : "Submit Booking"}
               </Button>
             </form>
           </CardContent>
