@@ -13,6 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import SearchComponent from "@/components/Search";
+import { SelectComponent } from "@/components/SelectComponent";
+import PaginationComponent from "@/components/Pagination";
+import type { sortType } from "@/types/BookingType";
+import { useFetchBookings } from "@/hooks/useFetchBookings";
+import { BookingTableSkeleton } from "@/components/BookingsListSkeleton";
 const mockBookings = [
   {
     id: 1,
@@ -21,7 +27,6 @@ const mockBookings = [
     phone: "+1 (555) 123-4567",
     checkIn: "2024-01-15",
     checkOut: "2024-01-20",
-    guests: "2",
     message: "Celebrating anniversary, would love a room with ocean view",
   },
   {
@@ -31,7 +36,6 @@ const mockBookings = [
     phone: "+1 (555) 234-5678",
     checkIn: "2024-01-18",
     checkOut: "2024-01-25",
-    guests: "4",
     message: "Family vacation, kids are 8 and 10 years old",
   },
   {
@@ -41,12 +45,24 @@ const mockBookings = [
     phone: "+1 (555) 345-6789",
     checkIn: "2024-01-22",
     checkOut: "2024-01-27",
-    guests: "1",
     message: "Solo traveler, interested in diving activities",
   },
 ];
 
 const BookingsLists = () => {
+  const {
+    // bookings,
+    loading,
+    page,
+    setPage,
+    search,
+    setSearch,
+    sort,
+    setSort,
+    totalPages,
+    totalItems,
+  } = useFetchBookings(1, 10);
+
   return (
     <div className="min-h-screen bg-secondary/20">
       <div className="container mx-auto px-4 py-24">
@@ -57,45 +73,78 @@ const BookingsLists = () => {
               View and manage all resort bookings
             </CardDescription>
           </CardHeader>
+
           <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Check-in</TableHead>
-                    <TableHead>Check-out</TableHead>
-                    <TableHead>Guests</TableHead>
-                    <TableHead>Message</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {mockBookings.map((booking) => (
-                    <TableRow key={booking.id}>
-                      <TableCell className="font-medium">
-                        {booking.name}
-                      </TableCell>
-                      <TableCell>{booking.email}</TableCell>
-                      <TableCell>{booking.phone}</TableCell>
-                      <TableCell>{booking.checkIn}</TableCell>
-                      <TableCell>{booking.checkOut}</TableCell>
-                      <TableCell>{booking.guests}</TableCell>
-                      <TableCell className="max-w-xs truncate">
-                        {booking.message}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="flex items-center gap-4 mb-6">
+              <SearchComponent
+                searchTerm={search}
+                setSearchTerm={setSearch}
+                placeholder="Search by name, email or phone..."
+                className="w-full"
+              />
+
+              <SelectComponent
+                values={["newest", "oldest"]}
+                selectedValue={sort}
+                onSelect={(val) => setSort(val as sortType)}
+                label="Sort By"
+                placeholder="Sort"
+                clearable
+              />
+
+              {/* <SelectComponent
+              
+               /> */}
             </div>
 
+            <div className="overflow-x-auto">
+              {loading ? (
+                <BookingTableSkeleton />
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Check-in</TableHead>
+                      <TableHead>Check-out</TableHead>
+                      <TableHead>Message</TableHead>
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {mockBookings.map((booking) => (
+                      <TableRow key={booking.id}>
+                        <TableCell className="font-medium">
+                          {booking.name}
+                        </TableCell>
+                        <TableCell>{booking.email}</TableCell>
+                        <TableCell>{booking.phone}</TableCell>
+                        <TableCell>{booking.checkIn}</TableCell>
+                        <TableCell>{booking.checkOut}</TableCell>
+                        <TableCell className="max-w-xs truncate">
+                          {booking.message}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </div>
             {mockBookings.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 No bookings found
               </div>
             )}
+
+            <PaginationComponent
+              currentPage={page}
+              handlePageChange={setPage}
+              itemsPerPage={10}
+              totalPages={totalPages}
+              totalItems={totalItems}
+            />
           </CardContent>
         </Card>
       </div>

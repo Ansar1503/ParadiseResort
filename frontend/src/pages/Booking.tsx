@@ -54,8 +54,8 @@ const Booking = () => {
 
     if (Object.keys(newErrors).length > 0) return;
     try {
-      await submitBooking(formData);
-      if (!error) {
+      const data = await submitBooking(formData);
+      if (data.success) {
         toast.success("booking added successfully");
         setFormData({
           name: "",
@@ -69,6 +69,8 @@ const Booking = () => {
         });
 
         setErrors({});
+      } else {
+        toast.error("something went wrong");
       }
     } catch (error) {
       console.log("errors", error);
