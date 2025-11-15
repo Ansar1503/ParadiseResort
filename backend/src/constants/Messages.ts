@@ -4,6 +4,7 @@ export const Messages = {
     FETCHED: "Bookings retrieved successfully.",
     NOT_FOUND: "Booking not found.",
     ALREADY_EXISTS: "Booking already exists",
+    ID_NOT_FOUND: "Id is required",
   },
   DATE: {
     INVALID_CHECKIN_DATE: "Check-in date is invalid.",

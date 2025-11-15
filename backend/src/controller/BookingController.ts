@@ -17,7 +17,8 @@ export const createBooking = async (
     const parsed = createBookingSchema.safeParse(req.body);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return next(new AppError(issue.message, StatusCodes.BAD_REQUEST));
+      next(new AppError(issue.message, StatusCodes.BAD_REQUEST));
+      return;
     }
 
     const {
@@ -36,20 +37,22 @@ export const createBooking = async (
     const now = new Date();
 
     if (isNaN(checkIn.getTime())) {
-      return next(
+      next(
         new AppError(
           Messages.DATE.INVALID_CHECKIN_DATE,
           StatusCodes.BAD_REQUEST
         )
       );
+      return;
     }
     if (isNaN(checkOut.getTime())) {
-      return next(
+      next(
         new AppError(
           Messages.DATE.INVALID_CHECKOUT_DATE,
           StatusCodes.BAD_REQUEST
         )
       );
+      return;
     }
 
     const existingBooking = await Booking.findOne({
@@ -59,33 +62,37 @@ export const createBooking = async (
     });
 
     if (existingBooking) {
-      return next(
+      next(
         new AppError(Messages.BOOKING.ALREADY_EXISTS, StatusCodes.BAD_REQUEST)
       );
+      return;
     }
     if (checkIn.getTime() <= now.getTime()) {
-      return next(
+      next(
         new AppError(
           Messages.DATE.CHECKIN_BEFORE_TODAY,
           StatusCodes.BAD_REQUEST
         )
       );
+      return;
     }
     if (checkOut.getTime() <= now.getTime()) {
-      return next(
+      next(
         new AppError(
           Messages.DATE.CHECKOUT_BEFORE_TODAY,
           StatusCodes.BAD_REQUEST
         )
       );
+      return;
     }
     if (checkOut.getTime() <= checkIn.getTime()) {
-      return next(
+      next(
         new AppError(
           Messages.DATE.CHECKOUT_AFTER_CHECKIN,
           StatusCodes.BAD_REQUEST
         )
       );
+      return;
     }
 
     const booking = await Booking.create({
@@ -97,13 +104,15 @@ export const createBooking = async (
       message,
     });
 
-    return res.status(StatusCodes.CREATED).json({
+    res.status(StatusCodes.CREATED).json({
       success: true,
       message: Messages.BOOKING.CREATED,
       data: booking,
     });
+    return;
   } catch (error) {
     next(error);
+    return;
   }
 };
 
@@ -116,7 +125,8 @@ export const fetchBookings = async (
     const parsed = fetchBookingsQuerySchema.safeParse(req.query);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return next(new AppError(issue.message, StatusCodes.BAD_REQUEST));
+      next(new AppError(issue.message, StatusCodes.BAD_REQUEST));
+      return;
     }
     const { limit, page, search, sort } = parsed.data;
 
@@ -145,7 +155,7 @@ export const fetchBookings = async (
       .skip(skip)
       .limit(limit);
 
-    return res.status(StatusCodes.SUCCESS).json({
+    res.status(StatusCodes.SUCCESS).json({
       success: true,
       data,
       page,
@@ -153,7 +163,29 @@ export const fetchBookings = async (
       totalItems,
       totalPages,
     });
+    return;
   } catch (error) {
     next(error);
+    return;
+  }
+};
+
+export const deleteBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      next(
+        new AppError(Messages.BOOKING.ID_NOT_FOUND, StatusCodes.BAD_REQUEST)
+      );
+      return;
+    }
+    await Booking.findOneAndDelete({ _id: id });
+  } catch (error) {
+    next(error);
+    return;
   }
 };
