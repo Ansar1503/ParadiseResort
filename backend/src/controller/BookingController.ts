@@ -193,3 +193,129 @@ export const deleteBooking = async (
     return;
   }
 };
+
+export const updateBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const parsed = createBookingSchema.safeParse(req.body);
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      return next(new AppError(issue.message, StatusCodes.BAD_REQUEST));
+    }
+
+    const id = req.params.id;
+    if (!id) {
+      return next(
+        new AppError(Messages.BOOKING.ID_NOT_FOUND, StatusCodes.BAD_REQUEST)
+      );
+    }
+
+    const {
+      checkInDate,
+      checkInTime,
+      checkOutDate,
+      checkOutTime,
+      email,
+      name,
+      phone,
+      message,
+    } = parsed.data;
+
+    const checkIn = new Date(`${checkInDate}T${checkInTime}`);
+    const checkOut = new Date(`${checkOutDate}T${checkOutTime}`);
+    const now = new Date();
+
+    if (isNaN(checkIn.getTime())) {
+      next(
+        new AppError(
+          Messages.DATE.INVALID_CHECKIN_DATE,
+          StatusCodes.BAD_REQUEST
+        )
+      );
+      return;
+    }
+
+    if (isNaN(checkOut.getTime())) {
+      next(
+        new AppError(
+          Messages.DATE.INVALID_CHECKOUT_DATE,
+          StatusCodes.BAD_REQUEST
+        )
+      );
+      return;
+    }
+
+    if (checkIn <= now) {
+      next(
+        new AppError(
+          Messages.DATE.CHECKIN_BEFORE_TODAY,
+          StatusCodes.BAD_REQUEST
+        )
+      );
+      return;
+    }
+
+    if (checkOut <= now) {
+      next(
+        new AppError(
+          Messages.DATE.CHECKOUT_BEFORE_TODAY,
+          StatusCodes.BAD_REQUEST
+        )
+      );
+      return;
+    }
+
+    if (checkOut <= checkIn) {
+      next(
+        new AppError(
+          Messages.DATE.CHECKOUT_AFTER_CHECKIN,
+          StatusCodes.BAD_REQUEST
+        )
+      );
+      return;
+    }
+
+    const duplicate = await Booking.findOne({
+      _id: { $ne: id },
+      email,
+      checkIn,
+      checkOut,
+    });
+
+    if (duplicate) {
+      next(
+        new AppError(Messages.BOOKING.ALREADY_EXISTS, StatusCodes.BAD_REQUEST)
+      );
+      return;
+    }
+    const booking = await Booking.findByIdAndUpdate(
+      id,
+      {
+        name,
+        email,
+        phone,
+        checkIn,
+        checkOut,
+        message,
+      },
+      { new: true }
+    );
+
+    if (!booking) {
+      next(new AppError(Messages.BOOKING.NOT_FOUND, StatusCodes.BAD_REQUEST));
+      return;
+    }
+
+    res.status(StatusCodes.SUCCESS).json({
+      success: true,
+      message: Messages.BOOKING.UPDATED,
+      data: booking,
+    });
+    return;
+  } catch (error) {
+    next(error);
+  }
+};

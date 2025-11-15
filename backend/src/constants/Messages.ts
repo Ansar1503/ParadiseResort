@@ -1,5 +1,6 @@
 export const Messages = {
   BOOKING: {
+    UPDATED: "Booking updated successfully.",
     CREATED: "Booking created successfully.",
     FETCHED: "Bookings retrieved successfully.",
     NOT_FOUND: "Booking not found.",
