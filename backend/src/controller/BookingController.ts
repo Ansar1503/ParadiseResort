@@ -48,6 +48,18 @@ export const createBooking = async (
         )
       );
     }
+
+    const existingBooking = await Booking.findOne({
+      email,
+      checkIn,
+      checkOut,
+    });
+
+    if (existingBooking) {
+      return next(
+        new AppError(Messages.BOOKING.ALREADY_EXISTS, StatusCodes.BAD_REQUEST)
+      );
+    }
     if (checkIn.getTime() <= now.getTime()) {
       return next(
         new AppError(
