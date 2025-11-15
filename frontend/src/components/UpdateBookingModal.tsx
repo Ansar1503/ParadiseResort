@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import type { Booking, bookingForm } from "@/types/BookingType";
 import { validateField } from "@/validator/FormValidation";
 import { Loader2 } from "lucide-react";
+import { useEditBooking } from "@/hooks/useUpdateBooking";
 
 type Props = {
   isOpen: boolean;
@@ -34,7 +35,6 @@ export default function BookingFormModal({ booking, isOpen, setOpen }: Props) {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
     if (!booking) return;
 
@@ -53,6 +53,7 @@ export default function BookingFormModal({ booking, isOpen, setOpen }: Props) {
       message: booking.message || "",
     });
   }, [booking]);
+  const { editBookingById, loading } = useEditBooking();
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -63,7 +64,8 @@ export default function BookingFormModal({ booking, isOpen, setOpen }: Props) {
     setErrors((prev) => ({ ...prev, [id]: msg }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    if (!booking?._id) return;
     e.preventDefault();
 
     const newErrors: Record<string, string> = {};
@@ -75,13 +77,15 @@ export default function BookingFormModal({ booking, isOpen, setOpen }: Props) {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) return;
-
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      console.log("FORM SUBMITTED →", formData);
-      alert("Modal form submitted successfully!");
-    }, 1000);
+    try {
+      const res = await editBookingById(booking._id, formData);
+      if (res) {
+        setOpen(false);
+        return;
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   return (
@@ -200,11 +204,11 @@ export default function BookingFormModal({ booking, isOpen, setOpen }: Props) {
           <DialogFooter>
             <Button
               type="submit"
-              disabled={submitting}
+              disabled={loading}
               className="flex items-center gap-2"
             >
-              {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-              {submitting ? "Submitting..." : "Submit"}
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {loading ? "Submitting..." : "Submit"}
             </Button>
           </DialogFooter>
         </form>
