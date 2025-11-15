@@ -108,7 +108,7 @@ const Booking = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address *</Label>
+                <Label htmlFor="email">Ema  il Address *</Label>
                 <Input
                   id="email"
                   type="email"
