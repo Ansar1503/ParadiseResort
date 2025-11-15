@@ -4,8 +4,9 @@ export const createBookingSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   phone: z.string().min(5),
-  checkIn: z.string(),
-  checkOut: z.string(),
-  guests: z.coerce.number().min(1),
+  checkInDate: z.string(),
+  checkInTime: z.string(),
+  checkOutDate: z.string(),
+  checkOutTime: z.string(),
   message: z.string().optional(),
 });

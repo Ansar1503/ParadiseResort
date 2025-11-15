@@ -3,10 +3,8 @@ export interface Booking {
   name: string;
   email: string;
   phone: string;
-  checkInDate: string;
-  checkInTime: string;
-  checkOutDate: string;
-  checkOutTime: string;
+  checkIn: string;
+  checkOut: string;
   message?: string;
   createdAt?: string;
 }
