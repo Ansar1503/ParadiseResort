@@ -55,19 +55,21 @@ const Booking = () => {
     if (Object.keys(newErrors).length > 0) return;
     try {
       await submitBooking(formData);
-      toast.success("booking added successfully");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        checkInDate: "",
-        checkInTime: "",
-        checkOutDate: "",
-        checkOutTime: "",
-        message: "",
-      });
+      if (!error) {
+        toast.success("booking added successfully");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          checkInDate: "",
+          checkInTime: "",
+          checkOutDate: "",
+          checkOutTime: "",
+          message: "",
+        });
 
-      setErrors({});
+        setErrors({});
+      }
     } catch (error) {
       console.log("errors", error);
     }
