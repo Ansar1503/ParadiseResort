@@ -19,3 +19,10 @@ export interface bookingForm {
   checkOutTime: string;
   message: string;
 }
+export type sortType = "newest" | "oldest";
+export interface FetchBookingsPayload {
+  page: number;
+  limit: number;
+  search: string;
+  sort: sortType;
+}
