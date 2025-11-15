@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { Booking } from "../model/BookingSchema";
-import { createBookingSchema } from "../validators/zod/BookingSchemas";
+import {
+  createBookingSchema,
+  fetchBookingsQuerySchema,
+} from "../validators/zod/BookingSchemas";
 import { StatusCodes } from "../constants/StatusCodes";
 import { AppError } from "../utils/AppError";
 import { Messages } from "../constants/Messages";
@@ -98,6 +101,57 @@ export const createBooking = async (
       success: true,
       message: Messages.BOOKING.CREATED,
       data: booking,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const fetchBookings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const parsed = fetchBookingsQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      return next(new AppError(issue.message, StatusCodes.BAD_REQUEST));
+    }
+    const { limit, page, search, sort } = parsed.data;
+
+    const searchFilter =
+      search?.trim()?.length > 0
+        ? {
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { email: { $regex: search, $options: "i" } },
+              { phone: { $regex: search, $options: "i" } },
+            ],
+          }
+        : {};
+
+    const sortOption =
+      sort === "newest"
+        ? { createdAt: -1 as const }
+        : { createdAt: 1 as const };
+    const skip = (page - 1) * limit;
+
+    const totalItems = await Booking.countDocuments(searchFilter);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const data = await Booking.find(searchFilter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
+
+    return res.status(StatusCodes.SUCCESS).json({
+      success: true,
+      data,
+      page,
+      limit,
+      totalItems,
+      totalPages,
     });
   } catch (error) {
     next(error);

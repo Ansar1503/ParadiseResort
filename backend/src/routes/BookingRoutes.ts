@@ -4,6 +4,6 @@ import { createBooking } from "../controller/BookingController";
 
 const router = Router();
 
-router.route(Routes.ROOT).post(createBooking);
+router.route(Routes.ROOT).post(createBooking).get();
 
 export default router;

@@ -10,3 +10,16 @@ export const createBookingSchema = z.object({
   checkOutTime: z.string().nonempty("Check-out time is required."),
   message: z.string().optional(),
 });
+
+export const fetchBookingsQuerySchema = z.object({
+  page: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 1, "Invalid page number"),
+  limit: z
+    .string()
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 1, "Invalid limit value"),
+  search: z.string().optional().default(""),
+  sort: z.enum(["newest", "oldest"]).default("newest"),
+});
