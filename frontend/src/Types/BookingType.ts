@@ -7,7 +7,6 @@ export interface Booking {
   checkInTime: string;
   checkOutDate: string;
   checkOutTime: string;
-  guests: number;
   message?: string;
   createdAt?: string;
 }
@@ -20,6 +19,5 @@ export interface bookingForm {
   checkInTime: string;
   checkOutDate: string;
   checkOutTime: string;
-  guests: number;
   message: string;
 }
