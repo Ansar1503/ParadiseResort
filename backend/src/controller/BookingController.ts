@@ -184,6 +184,10 @@ export const deleteBooking = async (
       return;
     }
     await Booking.findOneAndDelete({ _id: id });
+    res
+      .status(StatusCodes.SUCCESS)
+      .json({ success: true, message: Messages.BOOKING.DELETED });
+    return;
   } catch (error) {
     next(error);
     return;

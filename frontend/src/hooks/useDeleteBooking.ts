@@ -15,16 +15,13 @@ export function useDeleteBookings(): UseDeleteBookingReturn {
     try {
       setLoading(true);
       setError(null);
-
-      const response = await deleteBooking(id);
-      return response;
+      await deleteBooking(id);
     } catch (err: any) {
       const message =
         err?.response?.data?.message ||
         err?.message ||
         "Failed to delete booking";
       setError(message);
-      return null;
     } finally {
       setLoading(false);
     }

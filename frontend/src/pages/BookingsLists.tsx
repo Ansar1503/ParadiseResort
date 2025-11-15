@@ -103,7 +103,7 @@ const BookingsLists = () => {
                   <TableBody>
                     {bookings &&
                       bookings.map((booking) => (
-                        <TableRow key={booking.id}>
+                        <TableRow key={booking._id}>
                           <TableCell className="font-medium">
                             {booking.name}
                           </TableCell>
@@ -132,9 +132,11 @@ const BookingsLists = () => {
                               className={`cursor-pointer text-red-600 hover:text-red-500 ${
                                 deleting ? "opacity-50 pointer-events-none" : ""
                               }`}
-                              onClick={() =>
-                                !deleting && handleDeleteClick(booking.id)
-                              }
+                              onClick={() => {
+                                if (!deleting) {
+                                  handleDeleteClick(booking._id);
+                                }
+                              }}
                             />
                           </TableCell>
                         </TableRow>

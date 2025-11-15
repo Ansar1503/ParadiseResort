@@ -2,7 +2,10 @@ import mongoose, { Schema } from "mongoose";
 
 const bookingSchema = new Schema(
   {
-    _id: { type: String },
+    _id: {
+      type: String,
+      default: () => new mongoose.Types.ObjectId().toString(),
+    },
     name: { type: String, required: true },
     email: { type: String, required: true },
     phone: { type: String, required: true },

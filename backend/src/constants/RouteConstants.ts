@@ -1,5 +1,5 @@
 export const Routes = {
   BOOKINGS: "/bookings",
-  PARAMS: "/id",
+  PARAMS: "/:id",
   ROOT: "/",
 };
