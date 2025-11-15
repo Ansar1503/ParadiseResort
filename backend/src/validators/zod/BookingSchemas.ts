@@ -6,6 +6,6 @@ export const createBookingSchema = z.object({
   phone: z.string().min(5),
   checkIn: z.string(),
   checkOut: z.string(),
-  guests: z.number().min(1),
+  guests: z.coerce.number().min(1),
   message: z.string().optional(),
 });

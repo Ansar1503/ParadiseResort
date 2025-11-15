@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,51 +17,60 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import Footer from "@/components/Footer";
+import type { bookingForm } from "@/types/BookingType";
+import { validateBookingForm } from "@/validator/FormValidation";
 
 const Booking = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    fullName: "",
+  const [formData, setFormData] = useState<bookingForm>({
+    name: "",
     email: "",
     phone: "",
-    checkIn: "",
-    checkOut: "",
-    guests: "",
-    specialRequests: "",
+    checkInDate: "",
+    checkInTime: "",
+    checkOutDate: "",
+    checkOutTime: "",
+    guests: 0,
+    message: "",
   });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+    if (errors[id]) {
+      setErrors((prev) => ({ ...prev, [id]: "" }));
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !formData.fullName ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.checkIn ||
-      !formData.checkOut ||
-      !formData.guests
-    ) {
-      toast.error("Please fill in all required fields");
+    const validationErrors = validateBookingForm(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
-    toast.success("Booking submitted successfully! We'll contact you soon.");
-
     setFormData({
-      fullName: "",
+      name: "",
       email: "",
       phone: "",
-      checkIn: "",
-      checkOut: "",
-      guests: "",
-      specialRequests: "",
+      checkInDate: "",
+      checkInTime: "",
+      checkOutDate: "",
+      checkOutTime: "",
+      guests: 0,
+      message: "",
     });
 
-    setTimeout(() => navigate("/"), 2000);
+    setErrors({});
   };
-
   return (
     <div className="min-h-screen bg-secondary/20">
       <div className="container mx-auto px-4 py-24">
@@ -78,16 +86,19 @@ const Booking = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name *</Label>
+                <Label htmlFor="name">Full Name *</Label>
                 <Input
-                  id="fullName"
+                  id="name"
                   placeholder="John Doe"
-                  value={formData.fullName}
+                  value={formData.name}
                   onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
+                    setFormData({ ...formData, name: e.target.value })
                   }
                   required
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-sm">{errors.name}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -100,8 +111,10 @@ const Booking = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  required
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -114,44 +127,80 @@ const Booking = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
                   }
-                  required
                 />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm">{errors.phone}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="checkIn">Check-in Date *</Label>
+                  <Label htmlFor="checkInDate">Check-in Date *</Label>
                   <Input
-                    id="checkIn"
+                    id="checkInDate"
                     type="date"
-                    value={formData.checkIn}
-                    onChange={(e) =>
-                      setFormData({ ...formData, checkIn: e.target.value })
-                    }
+                    value={formData.checkInDate}
+                    onChange={handleChange}
                     required
                   />
+                  {errors.checkInDate && (
+                    <p className="text-red-500 text-sm">{errors.checkInDate}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="checkOut">Check-out Date *</Label>
+                  <Label htmlFor="checkInTime">Check-in Time *</Label>
                   <Input
-                    id="checkOut"
-                    type="date"
-                    value={formData.checkOut}
-                    onChange={(e) =>
-                      setFormData({ ...formData, checkOut: e.target.value })
-                    }
+                    id="checkInTime"
+                    type="time"
+                    value={formData.checkInTime}
+                    onChange={handleChange}
                     required
                   />
+                  {errors.checkInTime && (
+                    <p className="text-red-500 text-sm">{errors.checkInTime}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="checkOutDate">Check-out Date *</Label>
+                  <Input
+                    id="checkOutDate"
+                    type="date"
+                    value={formData.checkOutDate}
+                    onChange={handleChange}
+                    required
+                  />
+                  {errors.checkOutDate && (
+                    <p className="text-red-500 text-sm">
+                      {errors.checkOutDate}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="checkOutTime">Check-out Time *</Label>
+                  <Input
+                    id="checkOutTime"
+                    type="time"
+                    value={formData.checkOutTime}
+                    onChange={handleChange}
+                    required
+                  />
+                  {errors.checkOutTime && (
+                    <p className="text-red-500 text-sm">
+                      {errors.checkOutTime}
+                    </p>
+                  )}
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="guests">Number of Guests *</Label>
                 <Select
-                  value={formData.guests}
+                  value={formData.guests?.toString()}
                   onValueChange={(value) =>
-                    setFormData({ ...formData, guests: value })
+                    setFormData({ ...formData, guests: Number(value) })
                   }
                   required
                 >
@@ -163,27 +212,31 @@ const Booking = () => {
                     <SelectItem value="2">2 Guests</SelectItem>
                     <SelectItem value="3">3 Guests</SelectItem>
                     <SelectItem value="4">4 Guests</SelectItem>
-                    <SelectItem value="5">5+ Guests</SelectItem>
+                    <SelectItem value="5">5 Guests</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.guests && (
+                  <p className="text-red-500 text-sm">{errors.guests}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="specialRequests">
-                  Special Requests (Optional)
-                </Label>
+                <Label htmlFor="message">Special Requests (Optional)</Label>
                 <Textarea
-                  id="specialRequests"
+                  id="message"
                   placeholder="Any special requests or dietary requirements..."
                   rows={4}
-                  value={formData.specialRequests}
+                  value={formData.message}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      specialRequests: e.target.value,
+                      message: e.target.value,
                     })
                   }
                 />
+                {errors.message && (
+                  <p className="text-red-500 text-sm">{errors.message}</p>
+                )}
               </div>
 
               <Button type="submit" className="w-full" size="lg">
