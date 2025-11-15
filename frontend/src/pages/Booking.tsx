@@ -16,8 +16,10 @@ import type { bookingForm } from "@/types/BookingType";
 import { validateField } from "@/validator/FormValidation";
 import { usePostBookingForm } from "@/hooks/usePostBookingForm";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Booking = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<bookingForm>({
     name: "",
     email: "",
@@ -57,6 +59,7 @@ const Booking = () => {
       const data = await submitBooking(formData);
       if (data.success) {
         toast.success("booking added successfully");
+        navigate("/bookings");
         setFormData({
           name: "",
           email: "",

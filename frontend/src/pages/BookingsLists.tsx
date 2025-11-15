@@ -19,39 +19,11 @@ import PaginationComponent from "@/components/Pagination";
 import type { sortType } from "@/types/BookingType";
 import { useFetchBookings } from "@/hooks/useFetchBookings";
 import { BookingTableSkeleton } from "@/components/BookingsListSkeleton";
-const mockBookings = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    email: "sarah.j@email.com",
-    phone: "+1 (555) 123-4567",
-    checkIn: "2024-01-15",
-    checkOut: "2024-01-20",
-    message: "Celebrating anniversary, would love a room with ocean view",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    email: "m.chen@email.com",
-    phone: "+1 (555) 234-5678",
-    checkIn: "2024-01-18",
-    checkOut: "2024-01-25",
-    message: "Family vacation, kids are 8 and 10 years old",
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    email: "emily.r@email.com",
-    phone: "+1 (555) 345-6789",
-    checkIn: "2024-01-22",
-    checkOut: "2024-01-27",
-    message: "Solo traveler, interested in diving activities",
-  },
-];
+import { formatDateTime } from "@/lib/FormatDate";
 
 const BookingsLists = () => {
   const {
-    // bookings,
+    bookings,
     loading,
     page,
     setPage,
@@ -89,7 +61,7 @@ const BookingsLists = () => {
                 onSelect={(val) => setSort(val as sortType)}
                 label="Sort By"
                 placeholder="Sort"
-                clearable
+                clearable={false}
               />
 
               {/* <SelectComponent
@@ -114,25 +86,30 @@ const BookingsLists = () => {
                   </TableHeader>
 
                   <TableBody>
-                    {mockBookings.map((booking) => (
-                      <TableRow key={booking.id}>
-                        <TableCell className="font-medium">
-                          {booking.name}
-                        </TableCell>
-                        <TableCell>{booking.email}</TableCell>
-                        <TableCell>{booking.phone}</TableCell>
-                        <TableCell>{booking.checkIn}</TableCell>
-                        <TableCell>{booking.checkOut}</TableCell>
-                        <TableCell className="max-w-xs truncate">
-                          {booking.message}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {bookings &&
+                      bookings.map((booking) => (
+                        <TableRow key={booking.id}>
+                          <TableCell className="font-medium">
+                            {booking.name}
+                          </TableCell>
+                          <TableCell>{booking.email}</TableCell>
+                          <TableCell>{booking.phone}</TableCell>
+                          <TableCell>
+                            {formatDateTime(booking.checkIn)}
+                          </TableCell>
+                          <TableCell>
+                            {formatDateTime(booking.checkOut)}
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate">
+                            {booking.message}
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               )}
             </div>
-            {mockBookings.length === 0 && (
+            {bookings.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 No bookings found
               </div>
