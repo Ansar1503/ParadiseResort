@@ -20,9 +20,15 @@ type Props = {
   isOpen: boolean;
   setOpen: (open: boolean) => void;
   booking: Booking | null;
+  refetch: () => void;
 };
 
-export default function BookingFormModal({ booking, isOpen, setOpen }: Props) {
+export default function BookingFormModal({
+  booking,
+  isOpen,
+  setOpen,
+  refetch,
+}: Props) {
   const [formData, setFormData] = useState<bookingForm>({
     name: "",
     email: "",
@@ -80,6 +86,7 @@ export default function BookingFormModal({ booking, isOpen, setOpen }: Props) {
     try {
       const res = await editBookingById(booking._id, formData);
       if (res) {
+        refetch();
         setOpen(false);
         return;
       }

@@ -177,6 +177,7 @@ const BookingsLists = () => {
         isOpen={openEdit}
         setOpen={setOpenEdit}
         booking={selectedBooking}
+        refetch={refetch}
       />
     </>
   );
