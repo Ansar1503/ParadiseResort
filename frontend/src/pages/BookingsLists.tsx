@@ -20,6 +20,8 @@ import type { sortType } from "@/types/BookingType";
 import { useFetchBookings } from "@/hooks/useFetchBookings";
 import { BookingTableSkeleton } from "@/components/BookingsListSkeleton";
 import { formatDateTime } from "@/lib/FormatDate";
+import { Pencil, Trash2 } from "lucide-react";
+import { useDeleteBookings } from "@/hooks/useDeleteBooking";
 
 const BookingsLists = () => {
   const {
@@ -31,9 +33,21 @@ const BookingsLists = () => {
     setSearch,
     sort,
     setSort,
+    refetch,
     totalPages,
     totalItems,
   } = useFetchBookings(1, 10);
+  const { deleteBookingById, loading: deleting } = useDeleteBookings();
+
+  const handleDeleteClick = async (id: string) => {
+    if (!id) return;
+    try {
+      await deleteBookingById(id);
+      refetch();
+    } catch (error) {
+      console.log("delete error", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-secondary/20">
@@ -82,6 +96,7 @@ const BookingsLists = () => {
                       <TableHead>Check-in</TableHead>
                       <TableHead>Check-out</TableHead>
                       <TableHead>Message</TableHead>
+                      <TableHead>Action</TableHead>
                     </TableRow>
                   </TableHeader>
 
@@ -102,6 +117,25 @@ const BookingsLists = () => {
                           </TableCell>
                           <TableCell className="max-w-xs truncate">
                             {booking.message}
+                          </TableCell>
+                          <TableCell className="flex gap-4">
+                            <Pencil
+                              size={18}
+                              className={`cursor-pointer text-primary hover:text-primary/70 ${
+                                deleting ? "opacity-50 pointer-events-none" : ""
+                              }`}
+                              // onClick={() => handleEdit(booking.id)}
+                            />
+
+                            <Trash2
+                              size={18}
+                              className={`cursor-pointer text-red-600 hover:text-red-500 ${
+                                deleting ? "opacity-50 pointer-events-none" : ""
+                              }`}
+                              onClick={() =>
+                                !deleting && handleDeleteClick(booking.id)
+                              }
+                            />
                           </TableCell>
                         </TableRow>
                       ))}

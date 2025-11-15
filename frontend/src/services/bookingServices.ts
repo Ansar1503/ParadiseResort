@@ -11,3 +11,8 @@ export const fetchBookings = async (payload: FetchBookingsPayload) => {
   const response = await api.get(Routes.BOOKINGS, { params: payload });
   return response.data;
 };
+
+export const deleteBooking = async (id: string) => {
+  const response = await api.delete(`${Routes.BOOKINGS}${Routes.PARAMS}${id}`);
+  return response.data;
+};
