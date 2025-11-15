@@ -10,17 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-// import { toast } from "sonner";
+import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import type { bookingForm } from "@/types/BookingType";
-import { validateBookingForm } from "@/validator/FormValidation";
+import { validateField } from "@/validator/FormValidation";
 
 const Booking = () => {
   const [formData, setFormData] = useState<bookingForm>({
@@ -31,7 +24,6 @@ const Booking = () => {
     checkInTime: "",
     checkOutDate: "",
     checkOutTime: "",
-    guests: 0,
     message: "",
   });
 
@@ -41,22 +33,25 @@ const Booking = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { id, value } = e.target;
+
     setFormData((prev) => ({ ...prev, [id]: value }));
-    if (errors[id]) {
-      setErrors((prev) => ({ ...prev, [id]: "" }));
-    }
+    const errorMsg = validateField(id, value, { ...formData, [id]: value });
+    setErrors((prev) => ({ ...prev, [id]: errorMsg }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationErrors = validateBookingForm(formData);
+    const newErrors: Record<string, string> = {};
+    Object.keys(formData).forEach((key) => {
+      const error = validateField(key, (formData as any)[key], formData);
+      if (error) newErrors[key] = error;
+    });
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+    setErrors(newErrors);
 
+    if (Object.keys(newErrors).length > 0) return;
+    console.log("form", formData);
     setFormData({
       name: "",
       email: "",
@@ -65,12 +60,12 @@ const Booking = () => {
       checkInTime: "",
       checkOutDate: "",
       checkOutTime: "",
-      guests: 0,
       message: "",
     });
 
     setErrors({});
   };
+
   return (
     <div className="min-h-screen bg-secondary/20">
       <div className="container mx-auto px-4 py-24">
@@ -89,12 +84,9 @@ const Booking = () => {
                 <Label htmlFor="name">Full Name *</Label>
                 <Input
                   id="name"
-                  placeholder="John Doe"
+                  placeholder="Enter your full name"
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
+                  onChange={handleChange}
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm">{errors.name}</p>
@@ -106,11 +98,9 @@ const Booking = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
+                  placeholder="sample@example.com"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={handleChange}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm">{errors.email}</p>
@@ -122,11 +112,9 @@ const Booking = () => {
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="9876543210"
                   value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
+                  onChange={handleChange}
                 />
                 {errors.phone && (
                   <p className="text-red-500 text-sm">{errors.phone}</p>
@@ -141,7 +129,6 @@ const Booking = () => {
                     type="date"
                     value={formData.checkInDate}
                     onChange={handleChange}
-                    required
                   />
                   {errors.checkInDate && (
                     <p className="text-red-500 text-sm">{errors.checkInDate}</p>
@@ -155,7 +142,6 @@ const Booking = () => {
                     type="time"
                     value={formData.checkInTime}
                     onChange={handleChange}
-                    required
                   />
                   {errors.checkInTime && (
                     <p className="text-red-500 text-sm">{errors.checkInTime}</p>
@@ -169,7 +155,6 @@ const Booking = () => {
                     type="date"
                     value={formData.checkOutDate}
                     onChange={handleChange}
-                    required
                   />
                   {errors.checkOutDate && (
                     <p className="text-red-500 text-sm">
@@ -185,7 +170,6 @@ const Booking = () => {
                     type="time"
                     value={formData.checkOutTime}
                     onChange={handleChange}
-                    required
                   />
                   {errors.checkOutTime && (
                     <p className="text-red-500 text-sm">
@@ -196,43 +180,13 @@ const Booking = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="guests">Number of Guests *</Label>
-                <Select
-                  value={formData.guests?.toString()}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, guests: Number(value) })
-                  }
-                  required
-                >
-                  <SelectTrigger id="guests">
-                    <SelectValue placeholder="Select number of guests" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 Guest</SelectItem>
-                    <SelectItem value="2">2 Guests</SelectItem>
-                    <SelectItem value="3">3 Guests</SelectItem>
-                    <SelectItem value="4">4 Guests</SelectItem>
-                    <SelectItem value="5">5 Guests</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.guests && (
-                  <p className="text-red-500 text-sm">{errors.guests}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="message">Special Requests (Optional)</Label>
                 <Textarea
                   id="message"
                   placeholder="Any special requests or dietary requirements..."
                   rows={4}
                   value={formData.message}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      message: e.target.value,
-                    })
-                  }
+                  onChange={handleChange}
                 />
                 {errors.message && (
                   <p className="text-red-500 text-sm">{errors.message}</p>
